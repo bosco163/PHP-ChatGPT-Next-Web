@@ -54,19 +54,6 @@
         #send:hover {
             background-color: #0056b3;
         }
-        #clear {
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            background-color: #dc3545;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-        }
-        #clear:hover {
-            background-color: #c82333;
-        }
         .message {
             display: flex;
             align-items: center;
@@ -90,36 +77,21 @@
         .message.chatgpt .message-content {
             background-color: #e2e3e5;
         }
-        .button-container {
-            display: flex;
-            align-items: center;
-        }
-        .github-button {
-            margin-left: 10px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-    <center><h1>ChatGPT-PHP</h1></center>
-        <center><div class="button-container">
-           <button id="clear">Clear</button>
-            <select id="model-selector">
-                <option value="gpt-3.5-turbo">GPT-3.5-Turbo</option>
-                <option value="gpt-4">GPT-4</option>
-            </select>
-            <a href="https://github.com/bosco163/PHP-ChatGPT-Next-Web" target="_blank">
-                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="30" class="github-button">
-            </a>
-        </div></center>
-    <br>
+    <center><h1>ChatGPT-PHP</h1>
+        <select id="model-selector">
+            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            <option value="gpt-4">GPT-4</option>
+        </select></center><br>
     <div id="chat"></div>
     <div id="input-container">
         <input type="text" id="message" placeholder="Type your message here...">
         <button id="send">Send</button>
     </div>
 
-    <script>
+    <script type="9b37543f07c2814ae95cc895-text/javascript">
         let messages = [{role: 'system', content: 'You are a helpful assistant.'}];
 
         document.getElementById('send').addEventListener('click', function() {
@@ -136,7 +108,7 @@
 
             let chatGPTDiv = document.createElement('div');
             chatGPTDiv.classList.add('message', 'chatgpt');
-            chatGPTDiv.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/OpenAI_Logo.svg/768px-OpenAI_Logo.svg.png" alt="ChatGPT"><div class="message-content"></div>`;
+            chatGPTDiv.innerHTML = `<img src="https://ts1.cn.mm.bing.net/th/id/R-C.44f7b44e144c3e62a7bf26d3ed9dbc25?rik=4mNHzi4yH%2fL%2bGQ&riu=http%3a%2f%2fwww.kuaipng.com%2fUploads%2fpic%2fw%2f2023%2f02-09%2f135403%2fwater_135403_698_698_.png&ehk=D%2bT8GsjcmjFS9uaNJ2JvSOP8R8kbzcmFHLdm8GV69lU%3d&risl=&pid=ImgRaw&r=0" alt="ChatGPT"><div class="message-content"></div>`;
             chat.appendChild(chatGPTDiv);
 
             fetch('chat.php', {
@@ -188,12 +160,6 @@
 
             document.getElementById('message').value = '';
         });
-
-        document.getElementById('clear').addEventListener('click', function() {
-            let chat = document.getElementById('chat');
-            chat.innerHTML = '';
-            messages = [{role: 'system', content: 'You are a helpful assistant.'}];
-        });
     </script>
-</body>
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="9b37543f07c2814ae95cc895-|49" defer></script></body>
 </html>
