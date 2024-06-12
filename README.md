@@ -1,4 +1,4 @@
-# PHP-ChatGPT-Next-Neb
+# PHP-ChatGPT-Next-Web
 <div align="center">
 <img src="./nextweb.jpg" alt="icon"/>
 php-chatgpt-next-web, supports multiple features, the smallest with only two files.<br><br>
