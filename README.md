@@ -4,7 +4,7 @@
 php-chatgpt-next-web, supports multiple features, the smallest with only two files.<br><br>
 php-chatgpt-next-web，支持多种功能，最小的只有两个文件。</div>
 
-## QQ Group: [931860906](https://github.com/mushan0x0)
+## QQ Group: [931860906](https://qm.qq.com/q/JUExdF2FuS)
 
 ## Features
 - [ ] Stream output: Real-time response, real-time output
