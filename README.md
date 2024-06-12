@@ -12,7 +12,7 @@ php-chatgpt-next-web，支持多种功能，最小的只有两个文件。</div>
 - [x] Function calling: Coming soon…
 
 ## 特点
-- [ ] Stream流输出: 实时响应，实时输出
+- [ ] Stream流式响应: 实时响应，实时输出
 - [ ] 聊天记录: 聊天记录缓存，附带清空按钮
 - [ ] 模型选择器: 支持用户自行选择模型
 - [x] Markdown显示: 即将到来…
