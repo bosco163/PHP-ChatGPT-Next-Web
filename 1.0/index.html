@@ -139,7 +139,7 @@
             chatGPTDiv.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/OpenAI_Logo.svg/768px-OpenAI_Logo.svg.png" alt="ChatGPT"><div class="message-content"></div>`;
             chat.appendChild(chatGPTDiv);
 
-            fetch('chat_stream.php', {
+            fetch('chat.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
