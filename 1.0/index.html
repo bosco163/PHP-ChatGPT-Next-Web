@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT-PHP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        #chat {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            height: 400px;
+            overflow-y: scroll;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        #model-selector {
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #message {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+        #send {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #send:hover {
+            background-color: #0056b3;
+        }
+        #clear {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: #dc3545;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+        #clear:hover {
+            background-color: #c82333;
+        }
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .message img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .message-content {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+            max-width: 80%;
+        }
+        .message.you .message-content {
+            background-color: #d1ecf1;
+        }
+        .message.chatgpt .message-content {
+            background-color: #e2e3e5;
+        }
+        .button-container {
+            display: flex;
+            align-items: center;
+        }
+        .github-button {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <center><h1>ChatGPT-PHP</h1></center>
+        <center><div class="button-container">
+           <button id="clear">Clear</button>
+            <select id="model-selector">
+                <option value="gpt-3.5-turbo">GPT-3.5-Turbo</option>
+                <option value="gpt-4">GPT-4</option>
+            </select>
+            <a href="https://github.com/bosco163/PHP-ChatGPT-Next-Web" target="_blank">
+                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="30" class="github-button">
+            </a>
+        </div></center>
+    <br>
+    <div id="chat"></div>
+    <div id="input-container">
+        <input type="text" id="message" placeholder="Type your message here...">
+        <button id="send">Send</button>
+    </div>
+
+    <script>
+        let messages = [{role: 'system', content: 'You are a helpful assistant.'}];
+
+        document.getElementById('send').addEventListener('click', function() {
+            let message = document.getElementById('message').value;
+            let selectedModel = document.getElementById('model-selector').value;
+            if (message.trim() === '') return;
+
+            let chat = document.getElementById('chat');
+            let userMessageDiv = document.createElement('div');
+            userMessageDiv.classList.add('message', 'you');
+            userMessageDiv.innerHTML = `<img src="http://q.qlogo.cn/headimg_dl?dst_uin=3121096037&spec=640&img_type=jpg" alt="You"><div class="message-content">${message}</div>`;
+            chat.appendChild(userMessageDiv);
+            messages.push({role: 'user', content: message});
+
+            let chatGPTDiv = document.createElement('div');
+            chatGPTDiv.classList.add('message', 'chatgpt');
+            chatGPTDiv.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/OpenAI_Logo.svg/768px-OpenAI_Logo.svg.png" alt="ChatGPT"><div class="message-content"></div>`;
+            chat.appendChild(chatGPTDiv);
+
+            fetch('chat_stream.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ messages: messages, model: selectedModel })
+            })
+            .then(response => {
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                function readStream() {
+                    reader.read().then(({ done, value }) => {
+                        if (done) {
+                            return;
+                        }
+
+                        let text = decoder.decode(value, { stream: true });
+                        let lines = text.split('\n');
+                        for (let line of lines) {
+                            if (line.startsWith('data: ')) {
+                                let json = line.replace('data: ', '');
+                                try {
+                                    let parsed = JSON.parse(json);
+                                    if (parsed.choices && parsed.choices[0].delta && parsed.choices[0].delta.content) {
+                                        chatGPTDiv.querySelector('.message-content').innerHTML += parsed.choices[0].delta.content;
+                                        chat.scrollTop = chat.scrollHeight;
+                                    }
+                                } catch (e) {
+                                    console.error('Parsing error:', e);
+                                }
+                            }
+                        }
+                        readStream();
+                    });
+                }
+
+                readStream();
+            })
+            .catch(error => {
+                let errorDiv = document.createElement('div');
+                errorDiv.classList.add('message', 'chatgpt');
+                errorDiv.innerHTML = `<img src="path/to/error-icon.png" alt="Error"><div class="message-content"><strong>Error:</strong> ${error.message}</div>`;
+                chat.appendChild(errorDiv);
+                chat.scrollTop = chat.scrollHeight;
+            });
+
+            document.getElementById('message').value = '';
+        });
+
+        document.getElementById('clear').addEventListener('click', function() {
+            let chat = document.getElementById('chat');
+            chat.innerHTML = '';
+            messages = [{role: 'system', content: 'You are a helpful assistant.'}];
+        });
+    </script>
+</body>
+</html>
